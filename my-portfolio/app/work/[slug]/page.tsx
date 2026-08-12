@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import { projects, getProject } from "@/lib/projects";
 import Nav from "@/components/Nav";
 import ProjectAnimation from "@/components/ProjectAnimation";
+import ProjectScreenshots from "@/components/ProjectScreenshots";
 
 export function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }));
@@ -25,12 +25,12 @@ export default async function ProjectPage({
       <Nav />
 
       <ProjectAnimation>
-        <Link
-          href="/#work"
+        
+          <a href="/#work"
           className="mb-10 inline-block font-mono text-xs uppercase tracking-[0.2em] text-parchment-dim hover:text-brass-bright"
         >
           ← Back to catalog
-        </Link>
+        </a>
 
         <p className="mb-3 font-mono text-xs uppercase tracking-[0.3em] text-brass">
           {project.id} — {project.subtitle}
@@ -40,9 +40,11 @@ export default async function ProjectPage({
           {project.title}
         </h1>
 
-        <p className="mt-8 max-w-2xl font-body text-lg leading-relaxed text-parchment-dim">
-          {project.longDescription}
-        </p>
+        <div className="mt-8 max-w-2xl space-y-4 font-body text-lg leading-relaxed text-parchment-dim">
+          {project.longDescription.map((paragraph, i) => (
+            <p key={i}>{paragraph}</p>
+          ))}
+        </div>
 
         <ul className="mt-8 flex flex-wrap gap-2">
           {project.stack.map((item) => (
@@ -55,28 +57,7 @@ export default async function ProjectPage({
           ))}
         </ul>
 
-        {project.screenshots.length > 0 ? (
-          <div className="mt-16 flex flex-col gap-8">
-            {project.screenshots.map((src) => (
-              <div
-                key={src}
-                className="border border-ink-line"
-              >
-                <Image
-                  src={src}
-                  alt={`${project.title} screenshot`}
-                  width={1600}
-                  height={1000}
-                  className="w-full"
-                />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="mt-16 font-mono text-xs uppercase tracking-[0.2em] text-parchment-faint">
-            Screenshots coming soon
-          </p>
-        )}
+        <ProjectScreenshots screenshots={project.screenshots} title={project.title} />
 
         <div className="mt-16 flex gap-6">
           {project.repoUrl && (

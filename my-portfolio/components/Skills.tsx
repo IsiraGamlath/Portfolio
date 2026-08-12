@@ -5,19 +5,23 @@ import { motion } from "framer-motion";
 const ledger = [
   {
     category: "Frontend",
-    items: ["React", "Java", "Next.js", "Kotlin", "TypeScript", "JavaScript(ES6+)", "Tailwind CSS", "HTML5", "CSS3"],
+    items: ["React",  "Next.js", "Kotlin", "TypeScript", "JavaScript(ES6+)", "Tailwind CSS", "HTML5", "CSS3"],
   },
   {
     category: "Backend / Full Stack",
-    items: ["Node.js", "Express.js", "NextJS", "C#", "C++", "Spring Boot", "REST APIs", "JWT Authentication", "MERN Stack"],
+    items: ["Node.js", "Express.js", "NextJS", "C#", "C++", "Spring Boot","Java", "REST APIs", "JWT Authentication", "MERN Stack","OAuth 2.0"],
+  },
+  {
+    category: "Tooling",
+    items: ["Git / GitHub","CI/CD", "VS Code", "IntelliJ IDEA", "Postman", "Figma", "Draw.io", "Jira","Vercel"],
+  },
+  {
+  category: "Cloud / DevOps",
+  items: ["AWS", "ECS Fargate", "Amazon ECR", "Application Load Balancer", "IAM", "Docker", "GitHub Actions"],
   },
   {
     category: "Data Bases",
     items: ["MongoDB", "PostgreSQL", "MySQL", "Neon"],
-  },
-  {
-    category: "Tooling",
-    items: ["Git / GitHub", "Docker Desktop", "GitHub Actions", "VS Code", "IntelliJ IDEA", "Postman", "Figma", "Draw.io", "Jira"],
   },
 ];
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import ResumeViewer from "@/components/ResumeViewer";
 
 const links = [
   { label: "Email", value: "isiraudaragamlath@gmail.com", href: "mailto:isiraudaragamlath@gmail.com" },
@@ -23,9 +24,16 @@ export default function Contact() {
           Correspondence
         </p>
 
-        <h2 className="max-w-2xl font-display text-4xl italic leading-tight text-parchment sm:text-5xl">
-          Open to internships in software development and data-driven roles — write in.
-        </h2>
+        <div className="flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-end">
+          <h2 className="max-w-2xl font-display text-4xl italic leading-tight text-parchment sm:text-5xl">
+            Open to internships in software development and data-driven roles — write in.
+          </h2>
+
+          
+        </div>
+        <div className="mt-8">
+            <ResumeViewer />
+          </div>
 
         <div className="mt-14 flex flex-col divide-y divide-ink-line border-y border-ink-line sm:flex-row sm:divide-x sm:divide-y-0">
           {links.map((link, index) => (
