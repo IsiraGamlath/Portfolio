@@ -4,6 +4,7 @@ import { projects, getProject } from "@/lib/projects";
 import Nav from "@/components/Nav";
 import ProjectAnimation from "@/components/ProjectAnimation";
 import ProjectScreenshots from "@/components/ProjectScreenshots";
+import ProjectArchitecture from "@/components/ProjectArchitecture";
 
 export function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }));
@@ -57,7 +58,63 @@ export default async function ProjectPage({
           ))}
         </ul>
 
-        <ProjectScreenshots screenshots={project.screenshots} title={project.title} />
+        {project.features && project.features.length > 0 && (
+          <div className="mt-16">
+            <p className="mb-3 font-mono text-xs uppercase tracking-[0.3em] text-brass">
+              Key Capabilities
+            </p>
+            <h2 className="font-display text-2xl italic text-parchment sm:text-3xl mb-8">
+              Key Features
+            </h2>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {project.features.map((feature, idx) => (
+                <div
+                  key={idx}
+                  className="border border-ink-line bg-ink-raised/40 p-6 transition-colors hover:border-brass-dim/60"
+                >
+                  <div className="mb-3 flex items-center gap-3">
+                    <span className="font-mono text-xs text-brass">
+                      {(idx + 1).toString().padStart(2, "0")}
+                    </span>
+                    <h3 className="font-display text-lg text-parchment font-medium">
+                      {feature.title}
+                    </h3>
+                  </div>
+                  <p className="font-body text-sm leading-relaxed text-parchment-dim">
+                    {feature.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {project.challenge && (
+          <div className="mt-12 border border-ink-line bg-ink-raised/30 p-6 sm:p-8">
+            <p className="mb-2 font-mono text-xs uppercase tracking-[0.3em] text-brass">
+              Technical Challenge
+            </p>
+            <h3 className="font-display text-xl italic text-parchment mb-3">
+              {project.challenge.title}
+            </h3>
+            <p className="font-body text-base leading-relaxed text-parchment-dim">
+              {project.challenge.description}
+            </p>
+          </div>
+        )}
+
+        {project.architecture && (
+          <ProjectArchitecture
+            headline={project.architecture.headline}
+            steps={project.architecture.steps}
+          />
+        )}
+
+        <ProjectScreenshots
+          screenshots={project.screenshots}
+          title={project.title}
+          layout={project.screenshotLayout}
+        />
 
         <div className="mt-16 flex gap-6">
           {project.repoUrl && (
