@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { projects } from "@/lib/projects";
@@ -90,6 +90,19 @@ export default function Skills() {
 
   const matchedProjects = selectedSkill ? getRelatedProjects(selectedSkill) : [];
 
+  // Close modal on Escape key press
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setSelectedSkill(null);
+      }
+    };
+    if (selectedSkill) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [selectedSkill]);
+
   return (
     <motion.section
       id="skills"
@@ -112,80 +125,97 @@ export default function Skills() {
           </div>
 
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-parchment-faint">
-            Click any skill to view linked projects
+            Click any skill to inspect linked projects
           </p>
         </div>
 
-        {/* Dynamic Connected Projects Drawer */}
+        {/* Centered Modal Overlay */}
         <AnimatePresence>
           {selectedSkill && (
-            <motion.div
-              initial={{ opacity: 0, height: 0, marginBottom: 0 }}
-              animate={{ opacity: 1, height: "auto", marginBottom: 48 }}
-              exit={{ opacity: 0, height: 0, marginBottom: 0 }}
-              transition={{ duration: 0.3 }}
-              className="overflow-hidden border border-brass-dim/60 bg-ink-raised/80 p-6 sm:p-8"
-            >
-              <div className="flex flex-wrap items-center justify-between gap-4 border-b border-ink-line pb-4">
-                <div className="flex items-center gap-3">
-                  <span className="font-mono text-xs uppercase tracking-widest text-brass">
-                    Applied In Field:
-                  </span>
-                  <span className="font-display text-xl font-medium text-parchment">
-                    {selectedSkill}
-                  </span>
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+              {/* Dimmed backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                onClick={() => setSelectedSkill(null)}
+                className="absolute inset-0 bg-ink/85 backdrop-blur-sm"
+              />
+
+              {/* Modal Card */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 15 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 15 }}
+                transition={{ duration: 0.25 }}
+                className="relative z-10 w-full max-w-2xl max-h-[85vh] overflow-y-auto border border-brass-dim bg-ink-raised p-6 sm:p-8 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] ring-1 ring-brass/20"
+              >
+                <div className="flex items-start justify-between border-b border-ink-line pb-4">
+                  <div>
+                    <span className="font-mono text-xs uppercase tracking-widest text-brass">
+                      Applied In Field
+                    </span>
+                    <h3 className="font-display text-2xl font-medium text-parchment mt-1">
+                      {selectedSkill}
+                    </h3>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedSkill(null)}
+                    aria-label="Close dialog"
+                    className="font-mono text-xs uppercase tracking-widest text-parchment-faint transition-colors hover:text-brass-bright p-1"
+                  >
+                    ✕ Close
+                  </button>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => setSelectedSkill(null)}
-                  className="font-mono text-xs uppercase tracking-widest text-parchment-faint transition-colors hover:text-brass-bright"
-                >
-                  ✕ Close panel
-                </button>
-              </div>
-
-              <div className="mt-6">
-                {matchedProjects.length > 0 ? (
-                  <div>
-                    <p className="mb-4 font-mono text-xs uppercase tracking-wider text-parchment-dim">
-                      {matchedProjects.length} Associated{" "}
-                      {matchedProjects.length === 1 ? "Project" : "Projects"}:
-                    </p>
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                      {matchedProjects.map((p) => (
-                        <Link
-                          key={p.id}
-                          href={`/work/${p.slug}`}
-                          className="group flex flex-col justify-between border border-ink-line bg-ink p-4 transition-all hover:border-brass hover:bg-ink-raised"
-                        >
-                          <div>
-                            <div className="mb-2 flex items-center justify-between">
-                              <span className="font-mono text-xs text-brass-dim group-hover:text-brass-bright">
-                                {p.id}
-                              </span>
-                              <span className="font-mono text-[10px] text-parchment-faint uppercase">
-                                View project →
-                              </span>
+                <div className="mt-6">
+                  {matchedProjects.length > 0 ? (
+                    <div>
+                      <p className="mb-4 font-mono text-xs uppercase tracking-wider text-parchment-dim">
+                        {matchedProjects.length} Associated{" "}
+                        {matchedProjects.length === 1 ? "Project" : "Projects"}:
+                      </p>
+                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                        {matchedProjects.map((p) => (
+                          <Link
+                            key={p.id}
+                            href={`/work/${p.slug}`}
+                            onClick={() => setSelectedSkill(null)}
+                            className="group flex flex-col justify-between border border-ink-line bg-ink p-4 transition-all hover:border-brass hover:bg-ink-raised/60"
+                          >
+                            <div>
+                              <div className="mb-2 flex items-center justify-between">
+                                <span className="font-mono text-xs text-brass-dim group-hover:text-brass-bright">
+                                  {p.id}
+                                </span>
+                                <span className="font-mono text-[10px] text-parchment-faint group-hover:text-brass-bright uppercase">
+                                  View project →
+                                </span>
+                              </div>
+                              <h4 className="font-display text-base text-parchment group-hover:text-brass-bright transition-colors">
+                                {p.title}
+                              </h4>
+                              <p className="mt-1 line-clamp-2 font-body text-xs text-parchment-dim">
+                                {p.description}
+                              </p>
                             </div>
-                            <h4 className="font-display text-base text-parchment group-hover:text-brass-bright transition-colors">
-                              {p.title}
-                            </h4>
-                            <p className="mt-1 line-clamp-2 font-body text-xs text-parchment-dim">
-                              {p.description}
-                            </p>
-                          </div>
-                        </Link>
-                      ))}
+                          </Link>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                ) : (
-                  <p className="font-body text-sm text-parchment-dim">
-                    Practiced & utilized in foundational development exercises and coursework.
-                  </p>
-                )}
-              </div>
-            </motion.div>
+                  ) : (
+                    <div className="border border-ink-line/80 bg-ink/50 p-5">
+                      <p className="font-body text-sm leading-relaxed text-parchment-dim">
+                        Practiced & utilized in foundational development exercises, coursework, and personal implementations.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            </div>
           )}
         </AnimatePresence>
 
